@@ -1,60 +1,15 @@
 import express from "express";
-import connectDatabase from "./src/config/dbConfig.js";
-
-const dbConnection = await connectDatabase(process.env.CONNECTION_STRING);
-
-let posts = [
-    {
-        id: 1,
-        description: "A test image",
-        image: "https://placecats.com/millie/300/150",
-    },
-    {
-        id: 2,
-        description: "Another test image",
-        image: "https://placecats.com/neo/300/150",
-    },
-    {
-        id: 3,
-        description: "A sister of a test image",
-        image: "https://placecats.com/millie_neo/300/200",
-    },
-    {
-        id: 4,
-        description: "Another sister of test image",
-        image: "https://placecats.com/neo_banana/300/150",
-    },
-    {
-        id: 5,
-        description: "A cousin of a test image",
-        image: "https://placecats.com/neo_2/300/150",
-    },
-]
+import routes from "./src/routes/postRoutes.js";
 
 
 // Creates an instance of an Express application. Represents the server
 const app = express();
-app.use(express.json()); // Express will use a JSON middleware
+routes(app); // Disposes the routes for the users
+
 
 // Makes server start in the desired port, and executes a function at start
 app.listen(8010, () => {
     console.log(`Server is listening...`);
-});
-
-// Function that returns all posts from mongoDB collection named "posts"
-async function getAllPosts(){
-    const db = dbConnection.db("instaLikeDB");
-    const collection = db.collection("posts");
-
-    return collection.find().toArray();
-}
-
-// Defines the route for getting a resource (GET Method) and what it executes and returns
-app.get("/posts", async (req, res) => {
-    const posts = await getAllPosts();
-    // Server sends a OK status code as response
-    res.status(200).json(posts);
-
 });
 
 // app.get("/posts/:id", (req, res) => {
