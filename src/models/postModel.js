@@ -11,3 +11,11 @@ export async function getAllPosts(){
 
     return collection.find().toArray();
 }
+
+// Function that creates a new post in mongoDB collection named "posts"
+export async function createPost(newPost){
+    const db = dbConnection.db("instaLikeDB");
+    const collection = db.collection("posts");
+    
+    return collection.insertOne(newPost);
+}
