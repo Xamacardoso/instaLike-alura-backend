@@ -1,7 +1,9 @@
 import express from "express";
+import connectDatabase from "./src/config/dbConfig.js";
 
+const dbConnection = await connectDatabase(process.env.CONNECTION_STRING);
 
-const posts = [
+let posts = [
     {
         id: 1,
         description: "A test image",
@@ -39,24 +41,33 @@ app.listen(8010, () => {
     console.log(`Server is listening...`);
 });
 
+// Function that returns all posts from mongoDB collection named "posts"
+async function getAllPosts(){
+    const db = dbConnection.db("instaLikeDB");
+    const collection = db.collection("posts");
+
+    return collection.find().toArray();
+}
+
 // Defines the route for getting a resource (GET Method) and what it executes and returns
-app.get("/posts", (req, res) => {
+app.get("/posts", async (req, res) => {
+    const posts = await getAllPosts();
     // Server sends a OK status code as response
     res.status(200).json(posts);
 
 });
 
-app.get("/posts/:id", (req, res) => {
-    // Picks the index of the post that has the required id 
-    const index = searchPostById(req.params.id); 
-    // Check if the post exists
-    if (index !== -1) { 
-        res.status(200).json(posts[index]); }
-    else {
-        res.status(404).json({ error: "Post not found" }); } })
+// app.get("/posts/:id", (req, res) => {
+//     // Picks the index of the post that has the required id 
+//     const index = searchPostById(req.params.id); 
+//     // Check if the post exists
+//     if (index !== -1) { 
+//         res.status(200).json(posts[index]); }
+//     else {
+//         res.status(404).json({ error: "Post not found" }); } })
 
-function searchPostById(id) {
-    return posts.findIndex((post) => {
-        return post.id === Number(id);
-    });
-}
+// function searchPostById(id) {
+//     return posts.findIndex((post) => {
+//         return post.id === Number(id);
+//     });
+// }
