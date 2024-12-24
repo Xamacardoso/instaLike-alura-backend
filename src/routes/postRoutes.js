@@ -3,7 +3,12 @@
 import express from "express";
 import { insertNewPost, listAllPosts, uploadImage, updateNewPost } from "../controllers/postsController.js";
 import multer from "multer";
+import cors from "cors";
 
+const corsOptions = {
+    origin: "http://localhost:3000",
+    optionsSuccessStatus: 200
+}
 
 // on Windows
 const storage = multer.diskStorage({
@@ -26,6 +31,7 @@ const upload = multer({dest: "./uploads", storage}); // Multer instance with des
 // Function that handles the routes.
 const routes = (app) => {
     app.use(express.json()); // Express will use a JSON middleware
+    app.use(cors(corsOptions)); // Express will use a CORS middleware
 
     // Defines the route for getting a resource (GET Method) and what it executes and returns
     app.get("/posts",listAllPosts);

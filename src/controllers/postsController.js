@@ -1,7 +1,8 @@
 // This file is responsible for handling all the REQUESTS related to posts.
 // It's an intermediary between the routes and the models
 import { getAllPosts, createPost, updatePost } from "../models/postModel.js";
-import fs from "fs";
+import generateImgDescription from "../services/geminiService.js";
+import fs, { readFileSync } from "fs";
 export async function listAllPosts(req, res){
     const posts = await getAllPosts();
     // Server sends a OK status code as response
@@ -50,14 +51,17 @@ export async function uploadImage(req, res){
 export async function updateNewPost(req, res){
     const id = req.params.id;
     const newPostImgUrl = `http://localhost:8010/${id}.png`;
-
-    const updatedPost = {
-        imgUrl: newPostImgUrl,
-        description: req.body.description,
-        alt: req.body.alt
-    }
-
+    
     try {
+        const imgBuffer = readFileSync(`uploads/${id}.png`); // Reads the image file from the uploads folder
+        const aiDescription = await generateImgDescription(imgBuffer);
+
+        const updatedPost = {
+            imgUrl: newPostImgUrl,
+            description: aiDescription,
+            alt: req.body.alt
+        }
+
         const createdPost = await updatePost(id, updatedPost);
         res.status(200).json(createdPost);
     }catch (error) {

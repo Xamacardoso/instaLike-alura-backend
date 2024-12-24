@@ -2,7 +2,7 @@
 
 import {GoogleGenerativeAI} from "@google/generative-ai";
 
-const genAi = new GoogleGenerativeAI(process.env.GoogleGenerativeAI); // Instantiates Google Generative AI
+const genAi = new GoogleGenerativeAI(process.env.GEMINI_API_KEY); // Instantiates Google Generative AI
 const aiModel = genAi.getGenerativeModel({model: "gemini-1.5-flash"}); // Selects the AI model that will be used
 
 // Exports the function to generate an image description using Google Generative AI
@@ -20,7 +20,9 @@ export default async function generateImgDescription(imageBuffer){
         }
 
         // Generate content using the AI model with the prompt and image data
-        const res = await model.generateContent([prompt, image]);
+        const res = await aiModel.generateContent([prompt, image]);
+        
+        return res.response.text() || "Descrição indisponivel";
 
     } catch (error) {
         // Log an error if there is an issue generating the image description
