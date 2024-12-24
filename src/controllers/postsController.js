@@ -1,6 +1,6 @@
 // This file is responsible for handling all the REQUESTS related to posts.
-// It's an intermediaary between the routes and the models
-import { getAllPosts, createPost } from "../models/postModel.js";
+// It's an intermediary between the routes and the models
+import { getAllPosts, createPost, updatePost } from "../models/postModel.js";
 import fs from "fs";
 export async function listAllPosts(req, res){
     const posts = await getAllPosts();
@@ -43,6 +43,25 @@ export async function uploadImage(req, res){
 
     } catch (error) {
         console.error("Error creating post: ", error.message);
+        res.status(500).json({ error: "Error creating post" });
+    }
+}
+
+export async function updateNewPost(req, res){
+    const id = req.params.id;
+    const newPostImgUrl = `http://localhost:8010/${id}.png`;
+
+    const updatedPost = {
+        imgUrl: newPostImgUrl,
+        description: req.body.description,
+        alt: req.body.alt
+    }
+
+    try {
+        const createdPost = await updatePost(id, updatedPost);
+        res.status(200).json(createdPost);
+    }catch (error) {
+        console.error("Error updating post: ", error.message);
         res.status(500).json({ error: "Error creating post" });
     }
 }

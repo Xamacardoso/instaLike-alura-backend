@@ -1,9 +1,11 @@
 // This file is responsible for handling the routes and disposing them
 
 import express from "express";
-import { insertNewPost, listAllPosts, uploadImage } from "../controllers/postsController.js";
+import { insertNewPost, listAllPosts, uploadImage, updateNewPost } from "../controllers/postsController.js";
 import multer from "multer";
 
+
+// on Windows
 const storage = multer.diskStorage({
     // Sets the destination directory for uploaded files
     destination: function (req, file, cb) {
@@ -16,9 +18,6 @@ const storage = multer.diskStorage({
         cb(null, file.originalname);
     }
 });
-
-
-// on Windows
 const upload = multer({dest: "./uploads", storage}); // Multer instance with destiny folder
 
 // Linux or Mac
@@ -32,6 +31,7 @@ const routes = (app) => {
     app.get("/posts",listAllPosts);
     app.post("/posts", insertNewPost);
     app.post("/upload", upload.single("img"), uploadImage);
+    app.put("/upload/:id", updateNewPost);
 }
 
 export default routes;

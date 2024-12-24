@@ -4,6 +4,7 @@ import routes from "./src/routes/postRoutes.js";
 
 // Creates an instance of an Express application. Represents the server
 const app = express();
+app.use(express.static("uploads")); // Disposes files in the uploads/ folder for external users 
 routes(app); // Disposes the routes for the users
 
 
