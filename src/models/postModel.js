@@ -1,4 +1,5 @@
 // This file is responsible for connecting with mongoDB and getting all posts
+import 'dotenv/config'
 import { ObjectId } from "mongodb";
 import connectDatabase from "../config/dbConfig.js";
 
